@@ -1,0 +1,22 @@
+[
+  {
+    "username": "teacher1",
+    "password": "pass123",
+    "name": "John Smith"
+  },
+  {
+    "username": "teacher2",
+    "password": "pass456",
+    "name": "Jane Doe"
+  },
+  {
+    "id": 3,
+    "username": "haahah@gmail.com",
+    "password": "$2a$10$CsyK4HEreIqEWhKHpi7Rh./PgUb9wq/l37auUlVV3mkW6uRQr6YVO"
+  },
+  {
+    "id": 4,
+    "username": "Admin",
+    "password": "$2a$10$qPiYMiZ1we6bVYYJFdKwFe/0mDC1GD/0Sz.UkB1MsBa9beTUnN2ri"
+  }
+]
