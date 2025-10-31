@@ -1,3 +1,13 @@
 {
-  "rootDirectory": "react-eduapp"
+  "version": 2,
+  "builds": [
+    {
+      "src": "react-eduapp/package.json",
+      "use": "@vercel/static-build"
+    }
+  ],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/.*", "dest": "/index.html" }
+  ]
 }
