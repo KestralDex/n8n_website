@@ -1,9 +1,8 @@
 {
   "version": 2,
-  "rootDirectory": "react-eduapp",
   "builds": [
     {
-      "src": "package.json",
+      "src": "react-eduapp/package.json",
       "use": "@vercel/static-build"
     }
   ],
