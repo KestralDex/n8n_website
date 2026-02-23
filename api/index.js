@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const { Pool } = require('pg');
 
 const app = express();
 
@@ -9,6 +11,52 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const DATABASE_URL = process.env.DATABASE_URL;
+
+// PostgreSQL connection pool (singleton)
+let pool;
+
+function getPool() {
+  if (!pool) {
+    pool = new Pool({
+      connectionString: DATABASE_URL,
+      ssl: { rejectUnauthorized: false }
+    });
+  }
+  return pool;
+}
+
+// Middleware to verify JWT
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'Access token required' });
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: 'Invalid token' });
+    }
+    req.user = user;
+    next();
+  });
+};
+
+// Years route - standalone
+app.get('/years', authenticateToken, async (req, res) => {
+  try {
+    const pool = getPool();
+    const years = await pool.query('SELECT * FROM years ORDER BY id');
+    res.json({ years: years.rows });
+  } catch (error) {
+    console.error('Error fetching years:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 // Import routes
 const registerRouter = require('./register');

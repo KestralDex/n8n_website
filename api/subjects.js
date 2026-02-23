@@ -38,6 +38,18 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+// GET years
+router.get('/years', authenticateToken, async (req, res) => {
+  try {
+    const pool = getPool();
+    const years = await pool.query('SELECT * FROM years ORDER BY id');
+    res.json({ years: years.rows });
+  } catch (error) {
+    console.error('Error fetching years:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // GET subjects
 router.get('/', authenticateToken, async (req, res) => {
   const { year_id } = req.query;
