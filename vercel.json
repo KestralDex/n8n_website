@@ -1,5 +1,29 @@
 {
   "version": 2,
-  "buildCommand": "cd react-eduapp; npm install; npm run build",
-  "outputDirectory": "react-eduapp/dist"
+  "builds": [
+    {
+      "src": "react-eduapp/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "outputDirectory": "react-eduapp/dist"
+      }
+    },
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/react-eduapp/dist/$1"
+    }
+  ]
 }
