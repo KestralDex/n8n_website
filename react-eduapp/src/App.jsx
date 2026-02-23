@@ -5,6 +5,8 @@ import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import Scanner from './components/Scanner';
 import ProtectedRoute from './components/ProtectedRoute';
+import { SpeedInsights } from "@vercel/speed-insights/react"
+
 
 function App() {
   return (
