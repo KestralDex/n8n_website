@@ -22,5 +22,9 @@
       "src": "/(.*)",
       "dest": "/react-eduapp/dist/$1"
     }
-  ]
+  ],
+  "env": {
+    "DATABASE_URL": "postgresql://neondb_owner:npg_9qoYwaFmVn2c@ep-calm-silence-a4hr66ce.us-east-1.aws.neon.tech/neondb?sslmode=require",
+    "JWT_SECRET": "ssk_8v8y0ftdzr317mr4yzqrqerf7sbhgnbqxg02f1vapvs8g"
+  }
 }
