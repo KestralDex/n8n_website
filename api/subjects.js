@@ -1,24 +1,10 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const { Pool } = require('pg');
+const { getPool } = require('./init-db');
 
 const router = express.Router();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-const DATABASE_URL = process.env.DATABASE_URL;
-
-// PostgreSQL connection pool (singleton)
-let pool;
-
-function getPool() {
-  if (!pool) {
-    pool = new Pool({
-      connectionString: DATABASE_URL,
-      ssl: { rejectUnauthorized: false }
-    });
-  }
-  return pool;
-}
 
 // Middleware to verify JWT
 const authenticateToken = (req, res, next) => {

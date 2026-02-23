@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const { Pool } = require('pg');
+const { initDatabase, getPool } = require('./init-db');
 
 const app = express();
 
@@ -13,20 +13,9 @@ app.use(cors({
 app.use(express.json());
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-const DATABASE_URL = process.env.DATABASE_URL;
 
-// PostgreSQL connection pool (singleton)
-let pool;
-
-function getPool() {
-  if (!pool) {
-    pool = new Pool({
-      connectionString: DATABASE_URL,
-      ssl: { rejectUnauthorized: false }
-    });
-  }
-  return pool;
-}
+// Initialize database on startup
+initDatabase().catch(console.error);
 
 // Middleware to verify JWT
 const authenticateToken = (req, res, next) => {
@@ -66,6 +55,33 @@ app.get('/years', authenticateToken, async (req, res) => {
     res.json({ years: years.rows });
   } catch (error) {
     console.error('Error fetching years:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// POST create new year
+app.post('/years', authenticateToken, async (req, res) => {
+  const { name } = req.body;
+  
+  if (!name) {
+    return res.status(400).json({ error: 'Year name is required' });
+  }
+
+  try {
+    const pool = getPool();
+    const existingYear = await pool.query('SELECT id FROM years WHERE name = $1', [name]);
+    if (existingYear.rows.length > 0) {
+      return res.status(400).json({ error: 'Year already exists' });
+    }
+
+    const result = await pool.query(
+      'INSERT INTO years (name) VALUES ($1) RETURNING id, name',
+      [name]
+    );
+
+    res.status(201).json({ year: result.rows[0] });
+  } catch (error) {
+    console.error('Error creating year:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
