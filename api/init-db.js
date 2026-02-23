@@ -1,7 +1,8 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 
-const DATABASE_URL = process.env.DATABASE_URL;
+// Use Supabase POSTGRES_URL or fallback to DATABASE_URL
+const DATABASE_URL = process.env.POSTGRES_URL || process.env.DATABASE_URL;
 
 let pool;
 let initialized = false;
