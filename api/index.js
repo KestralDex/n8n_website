@@ -16,15 +16,15 @@ const protectedRouter = require('./protected');
 const subjectsRouter = require('./subjects');
 const attendanceRouter = require('./attendance');
 
-// Use routes
-app.use('/api/register', registerRouter);
-app.use('/api/login', loginRouter);
-app.use('/api/protected', protectedRouter);
-app.use('/api/subjects', subjectsRouter);
-app.use('/api/attendance', attendanceRouter);
+// Use routes (mounted at root since vercel handles /api prefix)
+app.use('/register', registerRouter);
+app.use('/login', loginRouter);
+app.use('/protected', protectedRouter);
+app.use('/subjects', subjectsRouter);
+app.use('/attendance', attendanceRouter);
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'API is running' });
 });
 
