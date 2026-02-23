@@ -50,7 +50,19 @@ const authenticateToken = (req, res, next) => {
 app.get('/years', authenticateToken, async (req, res) => {
   try {
     const pool = getPool();
-    const years = await pool.query('SELECT * FROM years ORDER BY id');
+    
+    // Check if years exist
+    let years = await pool.query('SELECT * FROM years ORDER BY id');
+    
+    // Auto-create default years if none exist
+    if (years.rows.length === 0) {
+      const defaultYears = ['FE', 'SE', 'TE', 'BE'];
+      for (const yearName of defaultYears) {
+        await pool.query('INSERT INTO years (name) VALUES ($1)', [yearName]);
+      }
+      years = await pool.query('SELECT * FROM years ORDER BY id');
+    }
+    
     res.json({ years: years.rows });
   } catch (error) {
     console.error('Error fetching years:', error);
